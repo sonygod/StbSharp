@@ -11,8 +11,6 @@ namespace StbSharp.MonoGame.WindowsDX.Test
 	/// </summary>
 	public class Game1 : Game
 	{
-		private const string ResourcePath = "StbSharp.MonoGame.WindowsDX.Test.Resources.image.jpg";
-
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 
