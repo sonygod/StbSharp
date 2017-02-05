@@ -724,7 +724,7 @@ namespace StbSharp
 			if ((j.code_bits) < (16)) stbi__grow_buffer_unsafe(j);
 			if ((j.succ_high) == (0))
 			{
-				memset(data, (short) 0, (long) 64);
+				memset(data, (short) 0, (long) 64 * sizeof(short));
 				t = (int) (stbi__jpeg_huff_decode(j, hdc));
 				diff = (int) ((t) > 0 ? stbi__extend_receive(j, (int) (t)) : 0);
 				dc = (int) (j.img_comp[b].dc_pred + diff);
@@ -1497,14 +1497,14 @@ namespace StbSharp
 						}
 						return (int) (stbi__err("outofmem"));
 					}
-					z.img_comp[i].data = (byte*) (z.img_comp[i].raw_data);
+					z.img_comp[i].data = (byte*) (((long) z.img_comp[i].raw_data + 15) & ~15);
 					z.img_comp[i].linebuf = ((byte*) ((void*) (0)));
 					if ((z.progressive) != 0)
 					{
 						z.img_comp[i].coeff_w = (int) ((z.img_comp[i].w2 + 7) >> 3);
 						z.img_comp[i].coeff_h = (int) ((z.img_comp[i].h2 + 7) >> 3);
 						z.img_comp[i].raw_coeff = malloc((ulong) (z.img_comp[i].coeff_w*z.img_comp[i].coeff_h*64*sizeof (short) + +15));
-						z.img_comp[i].coeff = (short*) (z.img_comp[i].raw_coeff);
+						z.img_comp[i].coeff = (short*) (((long) z.img_comp[i].raw_coeff + 15) & ~15);
 					}
 					else
 					{
