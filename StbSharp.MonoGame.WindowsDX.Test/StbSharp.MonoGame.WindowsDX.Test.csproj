@@ -52,7 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />
-    <EmbeddedResource Include="Resources\image.jpg" />
+    <Content Include="image.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
