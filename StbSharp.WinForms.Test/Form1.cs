@@ -78,17 +78,21 @@ namespace StbSharp.WinForms.Test
 
 				int x, y, comp;
 				
-				var data = Loader.load_from_memory(bytes, out x, out y, out comp, Image.STBI_rgb_alpha);
-				var data2 = Image.stbi_load_from_memory(bytes, out x, out y, out comp, Image.STBI_rgb_alpha);
+				var data2 = Loader.load_from_memory(bytes, out x, out y, out comp, Image.STBI_rgb_alpha);
+				var data = Image.stbi_load_from_memory(bytes, out x, out y, out comp, Image.STBI_rgb_alpha);
 
+				var wrongCount = 0;
 				for (var i = 0; i < data.Length; ++i)
 				{
 					if (data[i] != data2[i])
 					{
-						var k = 5;
+						++wrongCount;
+
+						var xc = i/4%x;
+						var yc = i/4/x;
 					}
 				}
-				
+
 				// Convert rgba to bgra
 				DoInvoke(() =>
 				{
@@ -123,6 +127,7 @@ namespace StbSharp.WinForms.Test
 				{
 					pictureBox1.Image = bmp;
 					labelStbSharp.Text = string.Format("{0:0.00} ms", passed.TotalMilliseconds);
+					labelWrongCount.Text = wrongCount.ToString();
 					labelStatus.Text = "Success";
 				});
 
