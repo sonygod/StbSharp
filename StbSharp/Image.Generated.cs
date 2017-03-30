@@ -4,7 +4,7 @@ using Sichem;
 
 namespace StbSharp
 {
-	public static unsafe partial class Stb
+	partial class Stb
 	{
 		public unsafe class stbi__context
 		{

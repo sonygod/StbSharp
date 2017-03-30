@@ -4,7 +4,7 @@ using Sichem;
 
 namespace StbSharp
 {
-	public static unsafe partial class Stb
+	partial class Stb
 	{
 		public static uint[] crc_table = new uint[]
 			{

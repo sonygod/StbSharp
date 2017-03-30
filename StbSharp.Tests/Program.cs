@@ -139,7 +139,7 @@ namespace StbSharp.Tests
 							using (var ms = new MemoryStream(data))
 							{
 								var loader = new ImageReaderFromStream();
-								parsed = loader.Read(ms, out xx, out yy, out ccomp, Stb.STBI_rgb_alpha);
+								parsed = loader.Read(ms, out xx, out yy, out ccomp, Stb.STBI_default);
 
 								x = xx;
 								y = yy;

@@ -4,7 +4,7 @@ using Sichem;
 
 namespace StbSharp
 {
-	partial class Stb
+	public unsafe partial class Stb
 	{
 		public static string LastError;
 
