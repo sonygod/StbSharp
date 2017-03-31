@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace StbSharp
 {
-	partial unsafe class Stb
+	unsafe partial class Stb
 	{
 		public delegate float stbir__kernel_fn(float x, float scale);
 

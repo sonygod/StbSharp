@@ -179,6 +179,8 @@
 #ifndef STBIR_INCLUDE_STB_IMAGE_RESIZE_H
 #define STBIR_INCLUDE_STB_IMAGE_RESIZE_H
 
+#define NULL 0
+
 #ifdef _MSC_VER
 typedef unsigned char  stbir_uint8;
 typedef unsigned short stbir_uint16;
@@ -2309,9 +2311,9 @@ static int stbir__resize_allocated(stbir__info *info,
     STBIR_ASSERT(info->horizontal_filter < STBIR__ARRAY_SIZE(stbir__filter_info_table));
     STBIR_ASSERT(info->vertical_filter < STBIR__ARRAY_SIZE(stbir__filter_info_table));
 
-    if (info->horizontal_filter >= STBIR__ARRAY_SIZE(stbir__filter_info_table))
+    if (info->horizontal_filter >= 6)
         return 0;
-    if (info->vertical_filter >= STBIR__ARRAY_SIZE(stbir__filter_info_table))
+    if (info->vertical_filter >= 6)
         return 0;
 
     if (alpha_channel < 0)
