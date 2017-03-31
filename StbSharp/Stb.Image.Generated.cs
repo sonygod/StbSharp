@@ -4,7 +4,7 @@ using Sichem;
 
 namespace StbSharp
 {
-	partial class Stb
+	unsafe partial class Stb
 	{
 		public unsafe class stbi__context
 		{
@@ -190,7 +190,7 @@ namespace StbSharp
 		public static int stbi__unpremultiply_on_load = (int) (0);
 		public static int stbi__de_iphone_flag = (int) (0);
 
-		public unsafe static void stbi__start_mem(stbi__context s, byte* buffer, int len)
+		public static void stbi__start_mem(stbi__context s, byte* buffer, int len)
 		{
 			s.io.read = null;
 			s.read_from_callbacks = (int) (0);
@@ -198,7 +198,7 @@ namespace StbSharp
 			s.img_buffer_end = s.img_buffer_original_end = buffer + len;
 		}
 
-		public unsafe static void stbi__start_callbacks(stbi__context s, stbi_io_callbacks c, void* user)
+		public static void stbi__start_callbacks(stbi__context s, stbi_io_callbacks c, void* user)
 		{
 			s.io = (stbi_io_callbacks) (c);
 			s.io_user_data = user;
@@ -209,18 +209,18 @@ namespace StbSharp
 			s.img_buffer_original_end = s.img_buffer_end;
 		}
 
-		public unsafe static void stbi__rewind(stbi__context s)
+		public static void stbi__rewind(stbi__context s)
 		{
 			s.img_buffer = s.img_buffer_original;
 			s.img_buffer_end = s.img_buffer_original_end;
 		}
 
-		public unsafe static void stbi_set_flip_vertically_on_load(int flag_true_if_should_flip)
+		public static void stbi_set_flip_vertically_on_load(int flag_true_if_should_flip)
 		{
 			stbi__vertically_flip_on_load = (int) (flag_true_if_should_flip);
 		}
 
-		public unsafe static byte* stbi__load_main(stbi__context s, int* x, int* y, int* comp, int req_comp)
+		public static byte* stbi__load_main(stbi__context s, int* x, int* y, int* comp, int req_comp)
 		{
 			if ((stbi__jpeg_test(s)) != 0) return stbi__jpeg_load(s, x, y, comp, (int) (req_comp));
 			if ((stbi__png_test(s)) != 0) return stbi__png_load(s, x, y, comp, (int) (req_comp));
@@ -232,7 +232,7 @@ namespace StbSharp
 			return ((byte*) ((ulong) ((stbi__err("unknown image type")) != 0 ? ((void*) (0)) : ((void*) (0)))));
 		}
 
-		public unsafe static byte* stbi__load_flip(stbi__context s, int* x, int* y, int* comp, int req_comp)
+		public static byte* stbi__load_flip(stbi__context s, int* x, int* y, int* comp, int req_comp)
 		{
 			byte* result = stbi__load_main(s, x, y, comp, (int) (req_comp));
 			if (((stbi__vertically_flip_on_load) != 0) && (result != ((byte*) ((void*) (0)))))
@@ -267,14 +267,14 @@ namespace StbSharp
 			return result;
 		}
 
-		public unsafe static byte* stbi_load_from_memory(byte* buffer, int len, int* x, int* y, int* comp, int req_comp)
+		public static byte* stbi_load_from_memory(byte* buffer, int len, int* x, int* y, int* comp, int req_comp)
 		{
 			stbi__context s = new stbi__context();
 			stbi__start_mem(s, buffer, (int) (len));
 			return stbi__load_flip(s, x, y, comp, (int) (req_comp));
 		}
 
-		public unsafe static byte* stbi_load_from_callbacks(stbi_io_callbacks clbk, void* user, int* x, int* y, int* comp,
+		public static byte* stbi_load_from_callbacks(stbi_io_callbacks clbk, void* user, int* x, int* y, int* comp,
 			int req_comp)
 		{
 			stbi__context s = new stbi__context();
@@ -282,17 +282,17 @@ namespace StbSharp
 			return stbi__load_flip(s, x, y, comp, (int) (req_comp));
 		}
 
-		public unsafe static void stbi_hdr_to_ldr_gamma(float gamma)
+		public static void stbi_hdr_to_ldr_gamma(float gamma)
 		{
 			stbi__h2l_gamma_i = (float) (1/gamma);
 		}
 
-		public unsafe static void stbi_hdr_to_ldr_scale(float scale)
+		public static void stbi_hdr_to_ldr_scale(float scale)
 		{
 			stbi__h2l_scale_i = (float) (1/scale);
 		}
 
-		public unsafe static void stbi__refill_buffer(stbi__context s)
+		public static void stbi__refill_buffer(stbi__context s)
 		{
 			int n = (int) (s.io.read(s.io_user_data, (sbyte*) ((byte*) (s.buffer_start)), (int) (s.buflen)));
 			if ((n) == (0))
@@ -310,7 +310,7 @@ namespace StbSharp
 
 		}
 
-		public unsafe static byte stbi__get8(stbi__context s)
+		public static byte stbi__get8(stbi__context s)
 		{
 			if ((s.img_buffer) < (s.img_buffer_end)) return (byte) (*s.img_buffer++);
 			if ((s.read_from_callbacks) != 0)
@@ -322,7 +322,7 @@ namespace StbSharp
 			return (byte) (0);
 		}
 
-		public unsafe static int stbi__at_eof(stbi__context s)
+		public static int stbi__at_eof(stbi__context s)
 		{
 			if ((s.io.read) != null)
 			{
@@ -333,7 +333,7 @@ namespace StbSharp
 			return (int) ((s.img_buffer) >= (s.img_buffer_end) ? 1 : 0);
 		}
 
-		public unsafe static void stbi__skip(stbi__context s, int n)
+		public static void stbi__skip(stbi__context s, int n)
 		{
 			if ((n) < (0))
 			{
@@ -355,7 +355,7 @@ namespace StbSharp
 			s.img_buffer += n;
 		}
 
-		public unsafe static int stbi__getn(stbi__context s, byte* buffer, int n)
+		public static int stbi__getn(stbi__context s, byte* buffer, int n)
 		{
 			if ((s.io.read) != null)
 			{
@@ -381,36 +381,36 @@ namespace StbSharp
 			else return (int) (0);
 		}
 
-		public unsafe static int stbi__get16be(stbi__context s)
+		public static int stbi__get16be(stbi__context s)
 		{
 			int z = (int) (stbi__get8(s));
 			return (int) ((z << 8) + stbi__get8(s));
 		}
 
-		public unsafe static uint stbi__get32be(stbi__context s)
+		public static uint stbi__get32be(stbi__context s)
 		{
 			uint z = (uint) (stbi__get16be(s));
 			return (uint) ((z << 16) + stbi__get16be(s));
 		}
 
-		public unsafe static int stbi__get16le(stbi__context s)
+		public static int stbi__get16le(stbi__context s)
 		{
 			int z = (int) (stbi__get8(s));
 			return (int) (z + (stbi__get8(s) << 8));
 		}
 
-		public unsafe static uint stbi__get32le(stbi__context s)
+		public static uint stbi__get32le(stbi__context s)
 		{
 			uint z = (uint) (stbi__get16le(s));
 			return (uint) (z + (stbi__get16le(s) << 16));
 		}
 
-		public unsafe static byte stbi__compute_y(int r, int g, int b)
+		public static byte stbi__compute_y(int r, int g, int b)
 		{
 			return (byte) (((r*77) + (g*150) + (29*b)) >> 8);
 		}
 
-		public unsafe static byte* stbi__convert_format(byte* data, int img_n, int req_comp, uint x, uint y)
+		public static byte* stbi__convert_format(byte* data, int img_n, int req_comp, uint x, uint y)
 		{
 			int i;
 			int j;
@@ -519,7 +519,7 @@ namespace StbSharp
 			return good;
 		}
 
-		public unsafe static int stbi__build_huffman(stbi__huffman* h, int* count)
+		public static int stbi__build_huffman(stbi__huffman* h, int* count)
 		{
 			int i;
 			int j;
@@ -573,7 +573,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static void stbi__build_fast_ac(short* fast_ac, stbi__huffman* h)
+		public static void stbi__build_fast_ac(short* fast_ac, stbi__huffman* h)
 		{
 			int i;
 			for (i = (int) (0); (i) < (1 << 9); ++i)
@@ -599,7 +599,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static void stbi__grow_buffer_unsafe(stbi__jpeg j)
+		public static void stbi__grow_buffer_unsafe(stbi__jpeg j)
 		{
 			do
 			{
@@ -621,7 +621,7 @@ namespace StbSharp
 			} while (j.code_bits <= 24);
 		}
 
-		public unsafe static int stbi__jpeg_huff_decode(stbi__jpeg j, stbi__huffman* h)
+		public static int stbi__jpeg_huff_decode(stbi__jpeg j, stbi__huffman* h)
 		{
 			uint temp;
 			int c;
@@ -656,7 +656,7 @@ namespace StbSharp
 			return (int) (((byte*) (h->values))[c]);
 		}
 
-		public unsafe static int stbi__extend_receive(stbi__jpeg j, int n)
+		public static int stbi__extend_receive(stbi__jpeg j, int n)
 		{
 			uint k;
 			int sgn;
@@ -669,7 +669,7 @@ namespace StbSharp
 			return (int) (k + (((stbi__jbias))[n] & ~sgn));
 		}
 
-		public unsafe static int stbi__jpeg_get_bits(stbi__jpeg j, int n)
+		public static int stbi__jpeg_get_bits(stbi__jpeg j, int n)
 		{
 			uint k;
 			if ((j.code_bits) < (n)) stbi__grow_buffer_unsafe(j);
@@ -680,7 +680,7 @@ namespace StbSharp
 			return (int) (k);
 		}
 
-		public unsafe static int stbi__jpeg_get_bit(stbi__jpeg j)
+		public static int stbi__jpeg_get_bit(stbi__jpeg j)
 		{
 			uint k;
 			if ((j.code_bits) < (1)) stbi__grow_buffer_unsafe(j);
@@ -690,7 +690,7 @@ namespace StbSharp
 			return (int) (k & 0x80000000);
 		}
 
-		public unsafe static int stbi__jpeg_decode_block(stbi__jpeg j, short* data, stbi__huffman* hdc, stbi__huffman* hac,
+		public static int stbi__jpeg_decode_block(stbi__jpeg j, short* data, stbi__huffman* hdc, stbi__huffman* hac,
 			short* fac, int b, byte* dequant)
 		{
 			int diff;
@@ -748,7 +748,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__jpeg_decode_block_prog_dc(stbi__jpeg j, short* data, stbi__huffman* hdc, int b)
+		public static int stbi__jpeg_decode_block_prog_dc(stbi__jpeg j, short* data, stbi__huffman* hdc, int b)
 		{
 			int diff;
 			int dc;
@@ -772,7 +772,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__jpeg_decode_block_prog_ac(stbi__jpeg j, short* data, stbi__huffman* hac, short* fac)
+		public static int stbi__jpeg_decode_block_prog_ac(stbi__jpeg j, short* data, stbi__huffman* hac, short* fac)
 		{
 			int k;
 			if ((j.spec_start) == (0)) return (int) (stbi__err("can't merge dc and ac"));
@@ -913,7 +913,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static byte stbi__clamp(int x)
+		public static byte stbi__clamp(int x)
 		{
 			if (((uint) (x)) > (255))
 			{
@@ -924,7 +924,7 @@ namespace StbSharp
 			return (byte) (x);
 		}
 
-		public unsafe static void stbi__idct_block(byte* _out_, int out_stride, short* data)
+		public static void stbi__idct_block(byte* _out_, int out_stride, short* data)
 		{
 			int i;
 			int* val = stackalloc int[64];
@@ -1073,7 +1073,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static byte stbi__get_marker(stbi__jpeg j)
+		public static byte stbi__get_marker(stbi__jpeg j)
 		{
 			byte x;
 			if (j.marker != 0xff)
@@ -1092,7 +1092,7 @@ namespace StbSharp
 			return (byte) (x);
 		}
 
-		public unsafe static void stbi__jpeg_reset(stbi__jpeg j)
+		public static void stbi__jpeg_reset(stbi__jpeg j)
 		{
 			j.code_bits = (int) (0);
 			j.code_buffer = (uint) (0);
@@ -1103,7 +1103,7 @@ namespace StbSharp
 			j.eob_run = (int) (0);
 		}
 
-		public unsafe static int stbi__parse_entropy_coded_data(stbi__jpeg z)
+		public static int stbi__parse_entropy_coded_data(stbi__jpeg z)
 		{
 			stbi__jpeg_reset(z);
 			if (z.progressive == 0)
@@ -1284,7 +1284,7 @@ namespace StbSharp
 
 		}
 
-		public unsafe static void stbi__jpeg_dequantize(short* data, byte* dequant)
+		public static void stbi__jpeg_dequantize(short* data, byte* dequant)
 		{
 			int i;
 			for (i = (int) (0); (i) < (64); ++i)
@@ -1293,7 +1293,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static void stbi__jpeg_finish(stbi__jpeg z)
+		public static void stbi__jpeg_finish(stbi__jpeg z)
 		{
 			if ((z.progressive) != 0)
 			{
@@ -1324,7 +1324,7 @@ namespace StbSharp
 
 		}
 
-		public unsafe static int stbi__process_marker(stbi__jpeg z, int m)
+		public static int stbi__process_marker(stbi__jpeg z, int m)
 		{
 			int L;
 			switch (m)
@@ -1405,7 +1405,7 @@ namespace StbSharp
 			return (int) (0);
 		}
 
-		public unsafe static int stbi__process_scan_header(stbi__jpeg z)
+		public static int stbi__process_scan_header(stbi__jpeg z)
 		{
 			int i;
 			int Ls = (int) (stbi__get16be(z.s));
@@ -1454,7 +1454,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__process_frame_header(stbi__jpeg z, int scan)
+		public static int stbi__process_frame_header(stbi__jpeg z, int scan)
 		{
 			stbi__context s = z.s;
 			int Lf;
@@ -1560,7 +1560,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__decode_jpeg_header(stbi__jpeg z, int scan)
+		public static int stbi__decode_jpeg_header(stbi__jpeg z, int scan)
 		{
 			int m;
 			z.marker = (byte) (0xff);
@@ -1587,7 +1587,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__decode_jpeg_image(stbi__jpeg j)
+		public static int stbi__decode_jpeg_image(stbi__jpeg j)
 		{
 			int m;
 			for (m = (int) (0); (m) < (4); m++)
@@ -1637,12 +1637,12 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static byte* resample_row_1(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
+		public static byte* resample_row_1(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
 		{
 			return in_near;
 		}
 
-		public unsafe static byte* stbi__resample_row_v_2(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
+		public static byte* stbi__resample_row_v_2(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
 		{
 			int i;
 			for (i = (int) (0); (i) < (w); ++i)
@@ -1652,7 +1652,7 @@ namespace StbSharp
 			return _out_;
 		}
 
-		public unsafe static byte* stbi__resample_row_h_2(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
+		public static byte* stbi__resample_row_h_2(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
 		{
 			int i;
 			byte* input = in_near;
@@ -1677,7 +1677,7 @@ namespace StbSharp
 			return _out_;
 		}
 
-		public unsafe static byte* stbi__resample_row_hv_2(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
+		public static byte* stbi__resample_row_hv_2(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
 		{
 			int i;
 			int t0;
@@ -1703,7 +1703,7 @@ namespace StbSharp
 			return _out_;
 		}
 
-		public unsafe static byte* stbi__resample_row_generic(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
+		public static byte* stbi__resample_row_generic(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
 		{
 			int i;
 			int j;
@@ -1717,7 +1717,7 @@ namespace StbSharp
 			return _out_;
 		}
 
-		public unsafe static void stbi__YCbCr_to_RGB_row(byte* _out_, byte* y, byte* pcb, byte* pcr, int count, int step)
+		public static void stbi__YCbCr_to_RGB_row(byte* _out_, byte* y, byte* pcb, byte* pcr, int count, int step)
 		{
 			int i;
 			for (i = (int) (0); (i) < (count); ++i)
@@ -1762,14 +1762,14 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static void stbi__setup_jpeg(stbi__jpeg j)
+		public static void stbi__setup_jpeg(stbi__jpeg j)
 		{
 			j.idct_block_kernel = stbi__idct_block;
 			j.YCbCr_to_RGB_kernel = stbi__YCbCr_to_RGB_row;
 			j.resample_row_hv_2_kernel = stbi__resample_row_hv_2;
 		}
 
-		public unsafe static void stbi__cleanup_jpeg(stbi__jpeg j)
+		public static void stbi__cleanup_jpeg(stbi__jpeg j)
 		{
 			int i;
 			for (i = (int) (0); (i) < (j.s.img_n); ++i)
@@ -1796,7 +1796,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static byte* load_jpeg_image(stbi__jpeg z, int* out_x, int* out_y, int* comp, int req_comp)
+		public static byte* load_jpeg_image(stbi__jpeg z, int* out_x, int* out_y, int* comp, int req_comp)
 		{
 			int n;
 			int decode_n;
@@ -1931,7 +1931,7 @@ namespace StbSharp
 
 		}
 
-		public unsafe static byte* stbi__jpeg_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
+		public static byte* stbi__jpeg_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
 		{
 			byte* result;
 			stbi__jpeg j = new stbi__jpeg();
@@ -1942,7 +1942,7 @@ namespace StbSharp
 			return result;
 		}
 
-		public unsafe static int stbi__jpeg_test(stbi__context s)
+		public static int stbi__jpeg_test(stbi__context s)
 		{
 			int r;
 			stbi__jpeg j = new stbi__jpeg();
@@ -1953,7 +1953,7 @@ namespace StbSharp
 			return (int) (r);
 		}
 
-		public unsafe static int stbi__jpeg_info_raw(stbi__jpeg j, int* x, int* y, int* comp)
+		public static int stbi__jpeg_info_raw(stbi__jpeg j, int* x, int* y, int* comp)
 		{
 			if (stbi__decode_jpeg_header(j, (int) (STBI__SCAN_header)) == 0)
 			{
@@ -1967,7 +1967,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__jpeg_info(stbi__context s, int* x, int* y, int* comp)
+		public static int stbi__jpeg_info(stbi__context s, int* x, int* y, int* comp)
 		{
 			int result;
 			stbi__jpeg j = new stbi__jpeg();
@@ -1977,7 +1977,7 @@ namespace StbSharp
 			return (int) (result);
 		}
 
-		public unsafe static int stbi__bitreverse16(int n)
+		public static int stbi__bitreverse16(int n)
 		{
 			n = (int) (((n & 0xAAAA) >> 1) | ((n & 0x5555) << 1));
 			n = (int) (((n & 0xCCCC) >> 2) | ((n & 0x3333) << 2));
@@ -1986,12 +1986,12 @@ namespace StbSharp
 			return (int) (n);
 		}
 
-		public unsafe static int stbi__bit_reverse(int v, int bits)
+		public static int stbi__bit_reverse(int v, int bits)
 		{
 			return (int) (stbi__bitreverse16((int) (v)) >> (16 - bits));
 		}
 
-		public unsafe static int stbi__zbuild_huffman(stbi__zhuffman* z, byte* sizelist, int num)
+		public static int stbi__zbuild_huffman(stbi__zhuffman* z, byte* sizelist, int num)
 		{
 			int i;
 			int k = (int) (0);
@@ -2052,13 +2052,13 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static byte stbi__zget8(stbi__zbuf* z)
+		public static byte stbi__zget8(stbi__zbuf* z)
 		{
 			if ((z->zbuffer) >= (z->zbuffer_end)) return (byte) (0);
 			return (byte) (*z->zbuffer++);
 		}
 
-		public unsafe static void stbi__fill_bits(stbi__zbuf* z)
+		public static void stbi__fill_bits(stbi__zbuf* z)
 		{
 			do
 			{
@@ -2070,7 +2070,7 @@ namespace StbSharp
 			} while (z->num_bits <= 24);
 		}
 
-		public unsafe static uint stbi__zreceive(stbi__zbuf* z, int n)
+		public static uint stbi__zreceive(stbi__zbuf* z, int n)
 		{
 			uint k;
 			if ((z->num_bits) < (n)) stbi__fill_bits(z);
@@ -2080,7 +2080,7 @@ namespace StbSharp
 			return (uint) (k);
 		}
 
-		public unsafe static int stbi__zhuffman_decode_slowpath(stbi__zbuf* a, stbi__zhuffman* z)
+		public static int stbi__zhuffman_decode_slowpath(stbi__zbuf* a, stbi__zhuffman* z)
 		{
 			int b;
 			int s;
@@ -2097,7 +2097,7 @@ namespace StbSharp
 			return (int) (((ushort*) (z->value))[b]);
 		}
 
-		public unsafe static int stbi__zhuffman_decode(stbi__zbuf* a, stbi__zhuffman* z)
+		public static int stbi__zhuffman_decode(stbi__zbuf* a, stbi__zhuffman* z)
 		{
 			int b;
 			int s;
@@ -2114,7 +2114,7 @@ namespace StbSharp
 			return (int) (stbi__zhuffman_decode_slowpath(a, z));
 		}
 
-		public unsafe static int stbi__zexpand(stbi__zbuf* z, sbyte* zout, int n)
+		public static int stbi__zexpand(stbi__zbuf* z, sbyte* zout, int n)
 		{
 			sbyte* q;
 			int cur;
@@ -2136,7 +2136,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__parse_huffman_block(stbi__zbuf* a)
+		public static int stbi__parse_huffman_block(stbi__zbuf* a)
 		{
 			sbyte* zout = a->zout;
 			for (;;)
@@ -2205,7 +2205,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static int stbi__compute_huffman_codes(stbi__zbuf* a)
+		public static int stbi__compute_huffman_codes(stbi__zbuf* a)
 		{
 			byte* length_dezigzag = stackalloc byte[19];
 			length_dezigzag[0] = (byte) (16);
@@ -2279,7 +2279,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__parse_uncompressed_block(stbi__zbuf* a)
+		public static int stbi__parse_uncompressed_block(stbi__zbuf* a)
 		{
 			byte* header = stackalloc byte[4];
 			int len;
@@ -2310,7 +2310,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__parse_zlib_header(stbi__zbuf* a)
+		public static int stbi__parse_zlib_header(stbi__zbuf* a)
 		{
 			int cmf = (int) (stbi__zget8(a));
 			int cm = (int) (cmf & 15);
@@ -2321,7 +2321,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static void stbi__init_zdefaults()
+		public static void stbi__init_zdefaults()
 		{
 			int i;
 			for (i = (int) (0); i <= 143; ++i)
@@ -2346,7 +2346,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static int stbi__parse_zlib(stbi__zbuf* a, int parse_header)
+		public static int stbi__parse_zlib(stbi__zbuf* a, int parse_header)
 		{
 			int final;
 			int type;
@@ -2392,7 +2392,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__do_zlib(stbi__zbuf* a, sbyte* obuf, int olen, int exp, int parse_header)
+		public static int stbi__do_zlib(stbi__zbuf* a, sbyte* obuf, int olen, int exp, int parse_header)
 		{
 			a->zout_start = obuf;
 			a->zout = obuf;
@@ -2401,7 +2401,7 @@ namespace StbSharp
 			return (int) (stbi__parse_zlib(a, (int) (parse_header)));
 		}
 
-		public unsafe static sbyte* stbi_zlib_decode_malloc_guesssize(sbyte* buffer, int len, int initial_size, int* outlen)
+		public static sbyte* stbi_zlib_decode_malloc_guesssize(sbyte* buffer, int len, int initial_size, int* outlen)
 		{
 			stbi__zbuf a = new stbi__zbuf();
 			sbyte* p = (sbyte*) (stbi__malloc((ulong) (initial_size)));
@@ -2421,12 +2421,12 @@ namespace StbSharp
 
 		}
 
-		public unsafe static sbyte* stbi_zlib_decode_malloc(sbyte* buffer, int len, int* outlen)
+		public static sbyte* stbi_zlib_decode_malloc(sbyte* buffer, int len, int* outlen)
 		{
 			return stbi_zlib_decode_malloc_guesssize(buffer, (int) (len), (int) (16384), outlen);
 		}
 
-		public unsafe static sbyte* stbi_zlib_decode_malloc_guesssize_headerflag(sbyte* buffer, int len, int initial_size,
+		public static sbyte* stbi_zlib_decode_malloc_guesssize_headerflag(sbyte* buffer, int len, int initial_size,
 			int* outlen, int parse_header)
 		{
 			stbi__zbuf a = new stbi__zbuf();
@@ -2447,7 +2447,7 @@ namespace StbSharp
 
 		}
 
-		public unsafe static int stbi_zlib_decode_buffer(sbyte* obuffer, int olen, sbyte* ibuffer, int ilen)
+		public static int stbi_zlib_decode_buffer(sbyte* obuffer, int olen, sbyte* ibuffer, int ilen)
 		{
 			stbi__zbuf a = new stbi__zbuf();
 			a.zbuffer = (byte*) (ibuffer);
@@ -2456,7 +2456,7 @@ namespace StbSharp
 			else return (int) (-1);
 		}
 
-		public unsafe static sbyte* stbi_zlib_decode_noheader_malloc(sbyte* buffer, int len, int* outlen)
+		public static sbyte* stbi_zlib_decode_noheader_malloc(sbyte* buffer, int len, int* outlen)
 		{
 			stbi__zbuf a = new stbi__zbuf();
 			sbyte* p = (sbyte*) (stbi__malloc((ulong) (16384)));
@@ -2476,7 +2476,7 @@ namespace StbSharp
 
 		}
 
-		public unsafe static int stbi_zlib_decode_noheader_buffer(sbyte* obuffer, int olen, sbyte* ibuffer, int ilen)
+		public static int stbi_zlib_decode_noheader_buffer(sbyte* obuffer, int olen, sbyte* ibuffer, int ilen)
 		{
 			stbi__zbuf a = new stbi__zbuf();
 			a.zbuffer = (byte*) (ibuffer);
@@ -2485,7 +2485,7 @@ namespace StbSharp
 			else return (int) (-1);
 		}
 
-		public unsafe static stbi__pngchunk stbi__get_chunk_header(stbi__context s)
+		public static stbi__pngchunk stbi__get_chunk_header(stbi__context s)
 		{
 			stbi__pngchunk c = new stbi__pngchunk();
 			c.length = (uint) (stbi__get32be(s));
@@ -2493,7 +2493,7 @@ namespace StbSharp
 			return (stbi__pngchunk) (c);
 		}
 
-		public unsafe static int stbi__check_png_header(stbi__context s)
+		public static int stbi__check_png_header(stbi__context s)
 		{
 			byte* png_sig = stackalloc byte[8];
 			png_sig[0] = (byte) (137);
@@ -2513,7 +2513,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__paeth(int a, int b, int c)
+		public static int stbi__paeth(int a, int b, int c)
 		{
 			int p = (int) (a + b - c);
 			int pa = (int) (abs((int) (p - a)));
@@ -2524,7 +2524,7 @@ namespace StbSharp
 			return (int) (c);
 		}
 
-		public unsafe static int stbi__create_png_image_raw(stbi__png a, byte* raw, uint raw_len, int out_n, uint x, uint y,
+		public static int stbi__create_png_image_raw(stbi__png a, byte* raw, uint raw_len, int out_n, uint x, uint y,
 			int depth, int color)
 		{
 			int bytes = (int) ((depth) == (16) ? 2 : 1);
@@ -2875,7 +2875,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__create_png_image(stbi__png a, byte* image_data, uint image_data_len, int out_n,
+		public static int stbi__create_png_image(stbi__png a, byte* image_data, uint image_data_len, int out_n,
 			int depth, int color, int interlaced)
 		{
 			byte* final;
@@ -2960,7 +2960,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__compute_transparency(stbi__png z, byte* tc, int out_n)
+		public static int stbi__compute_transparency(stbi__png z, byte* tc, int out_n)
 		{
 			stbi__context s = z.s;
 			uint i;
@@ -2990,7 +2990,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__compute_transparency16(stbi__png z, ushort* tc, int out_n)
+		public static int stbi__compute_transparency16(stbi__png z, ushort* tc, int out_n)
 		{
 			stbi__context s = z.s;
 			uint i;
@@ -3020,7 +3020,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__expand_png_palette(stbi__png a, byte* palette, int len, int pal_img_n)
+		public static int stbi__expand_png_palette(stbi__png a, byte* palette, int len, int pal_img_n)
 		{
 			uint i;
 			uint pixel_count = (uint) (a.s.img_x*a.s.img_y);
@@ -3063,7 +3063,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__reduce_png(stbi__png p)
+		public static int stbi__reduce_png(stbi__png p)
 		{
 			int i;
 			int img_len = (int) (p.s.img_x*p.s.img_y*p.s.img_out_n);
@@ -3081,17 +3081,17 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static void stbi_set_unpremultiply_on_load(int flag_true_if_should_unpremultiply)
+		public static void stbi_set_unpremultiply_on_load(int flag_true_if_should_unpremultiply)
 		{
 			stbi__unpremultiply_on_load = (int) (flag_true_if_should_unpremultiply);
 		}
 
-		public unsafe static void stbi_convert_iphone_png_to_rgb(int flag_true_if_should_convert)
+		public static void stbi_convert_iphone_png_to_rgb(int flag_true_if_should_convert)
 		{
 			stbi__de_iphone_flag = (int) (flag_true_if_should_convert);
 		}
 
-		public unsafe static void stbi__de_iphone(stbi__png z)
+		public static void stbi__de_iphone(stbi__png z)
 		{
 			stbi__context s = z.s;
 			uint i;
@@ -3150,7 +3150,7 @@ namespace StbSharp
 
 		}
 
-		public unsafe static int stbi__parse_png_file(stbi__png z, int scan, int req_comp)
+		public static int stbi__parse_png_file(stbi__png z, int scan, int req_comp)
 		{
 			byte* palette = stackalloc byte[1024];
 			byte pal_img_n = (byte) (0);
@@ -3368,7 +3368,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static byte* stbi__do_png(stbi__png p, int* x, int* y, int* n, int req_comp)
+		public static byte* stbi__do_png(stbi__png p, int* x, int* y, int* n, int req_comp)
 		{
 			byte* result = ((byte*) ((void*) (0)));
 			if (((req_comp) < (0)) || ((req_comp) > (4)))
@@ -3405,14 +3405,14 @@ namespace StbSharp
 			return result;
 		}
 
-		public unsafe static byte* stbi__png_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
+		public static byte* stbi__png_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
 		{
 			stbi__png p = new stbi__png();
 			p.s = s;
 			return stbi__do_png(p, x, y, comp, (int) (req_comp));
 		}
 
-		public unsafe static int stbi__png_test(stbi__context s)
+		public static int stbi__png_test(stbi__context s)
 		{
 			int r;
 			r = (int) (stbi__check_png_header(s));
@@ -3420,7 +3420,7 @@ namespace StbSharp
 			return (int) (r);
 		}
 
-		public unsafe static int stbi__png_info_raw(stbi__png p, int* x, int* y, int* comp)
+		public static int stbi__png_info_raw(stbi__png p, int* x, int* y, int* comp)
 		{
 			if (stbi__parse_png_file(p, (int) (STBI__SCAN_header), (int) (0)) == 0)
 			{
@@ -3434,14 +3434,14 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__png_info(stbi__context s, int* x, int* y, int* comp)
+		public static int stbi__png_info(stbi__context s, int* x, int* y, int* comp)
 		{
 			stbi__png p = new stbi__png();
 			p.s = s;
 			return (int) (stbi__png_info_raw(p, x, y, comp));
 		}
 
-		public unsafe static int stbi__bmp_test_raw(stbi__context s)
+		public static int stbi__bmp_test_raw(stbi__context s)
 		{
 			int r;
 			int sz;
@@ -3456,14 +3456,14 @@ namespace StbSharp
 			return (int) (r);
 		}
 
-		public unsafe static int stbi__bmp_test(stbi__context s)
+		public static int stbi__bmp_test(stbi__context s)
 		{
 			int r = (int) (stbi__bmp_test_raw(s));
 			stbi__rewind(s);
 			return (int) (r);
 		}
 
-		public unsafe static int stbi__high_bit(uint z)
+		public static int stbi__high_bit(uint z)
 		{
 			int n = (int) (0);
 			if ((z) == (0)) return (int) (-1);
@@ -3495,7 +3495,7 @@ namespace StbSharp
 			return (int) (n);
 		}
 
-		public unsafe static int stbi__bitcount(uint a)
+		public static int stbi__bitcount(uint a)
 		{
 			a = (uint) ((a & 0x55555555) + ((a >> 1) & 0x55555555));
 			a = (uint) ((a & 0x33333333) + ((a >> 2) & 0x33333333));
@@ -3505,7 +3505,7 @@ namespace StbSharp
 			return (int) (a & 0xff);
 		}
 
-		public unsafe static int stbi__shiftsigned(int v, int shift, int bits)
+		public static int stbi__shiftsigned(int v, int shift, int bits)
 		{
 			int result;
 			int z = (int) (0);
@@ -3523,7 +3523,7 @@ namespace StbSharp
 			return (int) (result);
 		}
 
-		public unsafe static void* stbi__bmp_parse_header(stbi__context s, stbi__bmp_data* info)
+		public static void* stbi__bmp_parse_header(stbi__context s, stbi__bmp_data* info)
 		{
 			int hsz;
 			if ((stbi__get8(s) != 'B') || (stbi__get8(s) != 'M'))
@@ -3628,7 +3628,7 @@ namespace StbSharp
 			return (void*) (1);
 		}
 
-		public unsafe static byte* stbi__bmp_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
+		public static byte* stbi__bmp_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
 		{
 			byte* _out_;
 			uint mr = (uint) (0);
@@ -3844,7 +3844,7 @@ namespace StbSharp
 			return _out_;
 		}
 
-		public unsafe static int stbi__tga_get_comp(int bits_per_pixel, int is_grey, int* is_rgb16)
+		public static int stbi__tga_get_comp(int bits_per_pixel, int is_grey, int* is_rgb16)
 		{
 			if ((is_rgb16) != null) *is_rgb16 = (int) (0);
 			switch (bits_per_pixel)
@@ -3868,7 +3868,7 @@ namespace StbSharp
 
 		}
 
-		public unsafe static int stbi__tga_info(stbi__context s, int* x, int* y, int* comp)
+		public static int stbi__tga_info(stbi__context s, int* x, int* y, int* comp)
 		{
 			int tga_w;
 			int tga_h;
@@ -3960,7 +3960,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__tga_test(stbi__context s)
+		public static int stbi__tga_test(stbi__context s)
 		{
 			int res = (int) (0);
 			int sz;
@@ -3995,7 +3995,7 @@ namespace StbSharp
 			return (int) (res);
 		}
 
-		public unsafe static void stbi__tga_read_rgb16(stbi__context s, byte* _out_)
+		public static void stbi__tga_read_rgb16(stbi__context s, byte* _out_)
 		{
 			ushort px = (ushort) (stbi__get16le(s));
 			ushort fiveBitMask = (ushort) (31);
@@ -4007,7 +4007,7 @@ namespace StbSharp
 			_out_[2] = (byte) ((b*255)/31);
 		}
 
-		public unsafe static byte* stbi__tga_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
+		public static byte* stbi__tga_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
 		{
 			int tga_offset = (int) (stbi__get8(s));
 			int tga_indexed = (int) (stbi__get8(s));
@@ -4200,14 +4200,14 @@ namespace StbSharp
 			return tga_data;
 		}
 
-		public unsafe static int stbi__psd_test(stbi__context s)
+		public static int stbi__psd_test(stbi__context s)
 		{
 			int r = (((stbi__get32be(s)) == (0x38425053))) ? 1 : 0;
 			stbi__rewind(s);
 			return (int) (r);
 		}
 
-		public unsafe static byte* stbi__psd_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
+		public static byte* stbi__psd_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
 		{
 			int pixelCount;
 			int channelCount;
@@ -4371,7 +4371,7 @@ namespace StbSharp
 			return _out_;
 		}
 
-		public unsafe static int stbi__pic_test_core(stbi__context s)
+		public static int stbi__pic_test_core(stbi__context s)
 		{
 			int i;
 			if (stbi__pic_is4(s, @"S\200\3664") == 0) return (int) (0);
@@ -4383,7 +4383,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static byte* stbi__readval(stbi__context s, int channel, byte* dest)
+		public static byte* stbi__readval(stbi__context s, int channel, byte* dest)
 		{
 			int mask = (int) (0x80);
 			int i;
@@ -4401,7 +4401,7 @@ namespace StbSharp
 			return dest;
 		}
 
-		public unsafe static void stbi__copyval(int channel, byte* dest, byte* src)
+		public static void stbi__copyval(int channel, byte* dest, byte* src)
 		{
 			int mask = (int) (0x80);
 			int i;
@@ -4411,7 +4411,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static byte* stbi__pic_load_core(stbi__context s, int width, int height, int* comp, byte* result)
+		public static byte* stbi__pic_load_core(stbi__context s, int width, int height, int* comp, byte* result)
 		{
 			int act_comp = (int) (0);
 			int num_packets = (int) (0);
@@ -4527,7 +4527,7 @@ namespace StbSharp
 			return result;
 		}
 
-		public unsafe static byte* stbi__pic_load(stbi__context s, int* px, int* py, int* comp, int req_comp)
+		public static byte* stbi__pic_load(stbi__context s, int* px, int* py, int* comp, int req_comp)
 		{
 			byte* result;
 			int i;
@@ -4560,14 +4560,14 @@ namespace StbSharp
 			return result;
 		}
 
-		public unsafe static int stbi__pic_test(stbi__context s)
+		public static int stbi__pic_test(stbi__context s)
 		{
 			int r = (int) (stbi__pic_test_core(s));
 			stbi__rewind(s);
 			return (int) (r);
 		}
 
-		public unsafe static int stbi__gif_test_raw(stbi__context s)
+		public static int stbi__gif_test_raw(stbi__context s)
 		{
 			int sz;
 			if ((((stbi__get8(s) != 'G') || (stbi__get8(s) != 'I')) || (stbi__get8(s) != 'F')) || (stbi__get8(s) != '8'))
@@ -4578,14 +4578,14 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__gif_test(stbi__context s)
+		public static int stbi__gif_test(stbi__context s)
 		{
 			int r = (int) (stbi__gif_test_raw(s));
 			stbi__rewind(s);
 			return (int) (r);
 		}
 
-		public unsafe static void stbi__gif_parse_colortable(stbi__context s, byte* pal, int num_entries, int transp)
+		public static void stbi__gif_parse_colortable(stbi__context s, byte* pal, int num_entries, int transp)
 		{
 			int i;
 			for (i = (int) (0); (i) < (num_entries); ++i)
@@ -4597,7 +4597,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static int stbi__gif_header(stbi__context s, stbi__gif g, int* comp, int is_info)
+		public static int stbi__gif_header(stbi__context s, stbi__gif g, int* comp, int is_info)
 		{
 			byte version;
 			if ((((stbi__get8(s) != 'G') || (stbi__get8(s) != 'I')) || (stbi__get8(s) != 'F')) || (stbi__get8(s) != '8'))
@@ -4618,7 +4618,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__gif_info_raw(stbi__context s, int* x, int* y, int* comp)
+		public static int stbi__gif_info_raw(stbi__context s, int* x, int* y, int* comp)
 		{
 			stbi__gif g = new stbi__gif();
 			if (stbi__gif_header(s, g, comp, (int) (1)) == 0)
@@ -4633,7 +4633,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static void stbi__out_gif_code(stbi__gif g, ushort code)
+		public static void stbi__out_gif_code(stbi__gif g, ushort code)
 		{
 			byte* p;
 			byte* c;
@@ -4667,7 +4667,7 @@ namespace StbSharp
 
 		}
 
-		public unsafe static byte* stbi__process_gif_raster(stbi__context s, stbi__gif g)
+		public static byte* stbi__process_gif_raster(stbi__context s, stbi__gif g)
 		{
 			byte lzw_cs;
 			int len;
@@ -4767,7 +4767,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static void stbi__fill_gif_background(stbi__gif g, int x0, int y0, int x1, int y1)
+		public static void stbi__fill_gif_background(stbi__gif g, int x0, int y0, int x1, int y1)
 		{
 			int x;
 			int y;
@@ -4789,7 +4789,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static byte* stbi__gif_load_next(stbi__context s, stbi__gif g, int* comp, int req_comp)
+		public static byte* stbi__gif_load_next(stbi__context s, stbi__gif g, int* comp, int req_comp)
 		{
 			int i;
 			byte* prev_out = ((byte*) (0));
@@ -4913,7 +4913,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe static byte* stbi__gif_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
+		public static byte* stbi__gif_load(stbi__context s, int* x, int* y, int* comp, int req_comp)
 		{
 			byte* u = ((byte*) (0));
 			stbi__gif g = new stbi__gif();
@@ -4931,12 +4931,12 @@ namespace StbSharp
 			return u;
 		}
 
-		public unsafe static int stbi__gif_info(stbi__context s, int* x, int* y, int* comp)
+		public static int stbi__gif_info(stbi__context s, int* x, int* y, int* comp)
 		{
 			return (int) (stbi__gif_info_raw(s, x, y, comp));
 		}
 
-		public unsafe static int stbi__bmp_info(stbi__context s, int* x, int* y, int* comp)
+		public static int stbi__bmp_info(stbi__context s, int* x, int* y, int* comp)
 		{
 			void* p;
 			stbi__bmp_data info = new stbi__bmp_data();
@@ -4950,7 +4950,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__psd_info(stbi__context s, int* x, int* y, int* comp)
+		public static int stbi__psd_info(stbi__context s, int* x, int* y, int* comp)
 		{
 			int channelCount;
 			if (stbi__get32be(s) != 0x38425053)
@@ -4991,7 +4991,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__pic_info(stbi__context s, int* x, int* y, int* comp)
+		public static int stbi__pic_info(stbi__context s, int* x, int* y, int* comp)
 		{
 			int act_comp = (int) (0);
 			int num_packets = (int) (0);
@@ -5046,7 +5046,7 @@ namespace StbSharp
 			return (int) (1);
 		}
 
-		public unsafe static int stbi__info_main(stbi__context s, int* x, int* y, int* comp)
+		public static int stbi__info_main(stbi__context s, int* x, int* y, int* comp)
 		{
 			if ((stbi__jpeg_info(s, x, y, comp)) != 0) return (int) (1);
 			if ((stbi__png_info(s, x, y, comp)) != 0) return (int) (1);
@@ -5058,14 +5058,14 @@ namespace StbSharp
 			return (int) (stbi__err("unknown image type"));
 		}
 
-		public unsafe static int stbi_info_from_memory(byte* buffer, int len, int* x, int* y, int* comp)
+		public static int stbi_info_from_memory(byte* buffer, int len, int* x, int* y, int* comp)
 		{
 			stbi__context s = new stbi__context();
 			stbi__start_mem(s, buffer, (int) (len));
 			return (int) (stbi__info_main(s, x, y, comp));
 		}
 
-		public unsafe static int stbi_info_from_callbacks(stbi_io_callbacks c, void* user, int* x, int* y, int* comp)
+		public static int stbi_info_from_callbacks(stbi_io_callbacks c, void* user, int* x, int* y, int* comp)
 		{
 			stbi__context s = new stbi__context();
 			stbi__start_callbacks(s, c, user);

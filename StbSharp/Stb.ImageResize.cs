@@ -21,7 +21,7 @@ namespace StbSharp
 			}
 		}
 
-		public unsafe class stbir__info
+		public class stbir__info
 		{
 			public void* input_data;
 			public int input_w;
