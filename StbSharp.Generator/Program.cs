@@ -247,7 +247,6 @@ namespace Generator
 			}
 		}
 
-
 		static void ProcessImageResize()
 		{
 			using (var output = new StringWriter())
@@ -330,13 +329,108 @@ namespace Generator
 			}
 		}
 
+		static void ProcessVorbis()
+		{
+			using (var output = new StringWriter())
+			{
+				var parameters = new ConversionParameters
+				{
+					InputPath = @"D:\Projects\StbSharp\StbSharp.Generator\StbSource\stb_vorbis.c",
+					Output = output,
+					Defines = new[]
+					{
+						"STB_VORBIS_NO_STDIO"
+					},
+					Namespace = "StbSharp",
+					Class = "Stb",
+					SkipStructs = new[]
+					{
+						"Residue",
+						"stb_vorbis"
+					},
+					SkipGlobalVariables = new[]
+					{
+						"channel_position"
+					},
+					SkipFunctions = new[]
+					{
+						"stbir__linear_to_srgb_uchar",
+						"stbiw__writefv",
+						"stbiw__writef",
+						"stbiw__outfile",
+						"stbi_write_bmp_to_func",
+						"stbi_write_tga_to_func",
+						"stbi_write_hdr_to_func",
+						"stbi_write_png_to_func",
+						"stbi_write_hdr_core",
+					},
+					Structs = new[]
+					{
+						"stb_vorbis_alloc",
+						"stb_vorbis_info",
+						"Codebook",
+						"Floor0",
+						"Floor1",
+						"Floor",
+						"MappingChannel",
+						"Mapping",
+						"Mode",
+						"CRCscan",
+						"ProbedPage",
+						"stbv__floor_ordering",
+					},
+					GlobalArrays = new[]
+					{
+						"crc_table",
+						"ogg_page_header",
+						"inverse_db_table",
+						"log2_4"
+					}
+				};
+
+				var cp = new ClangParser();
+
+				cp.Process(parameters);
+				var data = output.ToString();
+
+				// Post processing
+				Logger.Info("Post processing...");
+
+				data = data.Replace("(enum STBVorbisError)", string.Empty);
+
+				/*                data = data.Replace("int has_alpha = (int)(((comp) == (2)) || ((comp) == (4)));",
+									"int has_alpha = (((comp) == (2)) || ((comp) == (4)))?1:0;");
+								data = data.Replace("*arr?",
+									"*arr != null?");
+								data = data.Replace("sizeof(int)* * 2",
+									"sizeof(int) * 2");
+								data = data.Replace("(int)((*(data)).Size)",
+									"sizeof(byte)");
+								data = data.Replace("(int)((*(_out_)).Size)",
+									"sizeof(byte)");
+								data = data.Replace("(int)((*(hash_table[h])).Size)",
+									"sizeof(byte*)");
+								data = data.Replace("(hash_table[h][0]).Size",
+									"sizeof(byte*)");
+								data = data.Replace("(byte***)(malloc((ulong)(16384 * sizeof(char**)))))",
+									"(byte***)(malloc((ulong)(16384 * sizeof(byte**))))");
+								data = data.Replace("(hlist)?",
+									"(hlist != null)?");
+								data = data.Replace("(hash_table[i])?",
+									"(hash_table[i] != null)?");*/
+
+				File.WriteAllText(@"..\..\..\..\StbSharp\Stb.Vorbis.Generated.cs", data);
+			}
+		}
+
 		static void Main(string[] args)
 		{
 			try
 			{
-				ProcessImage();
+				// ProcessImage();
 				// ProcessImageWriter();
 				// ProcessImageResize();
+				ProcessVorbis();
 			}
 			catch (Exception ex)
 			{
