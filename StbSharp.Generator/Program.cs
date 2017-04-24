@@ -354,15 +354,7 @@ namespace Generator
 					},
 					SkipFunctions = new[]
 					{
-						"stbir__linear_to_srgb_uchar",
-						"stbiw__writefv",
-						"stbiw__writef",
-						"stbiw__outfile",
-						"stbi_write_bmp_to_func",
-						"stbi_write_tga_to_func",
-						"stbi_write_hdr_to_func",
-						"stbi_write_png_to_func",
-						"stbi_write_hdr_core",
+						"get_bits",
 					},
 					Structs = new[]
 					{
@@ -397,27 +389,18 @@ namespace Generator
 				Logger.Info("Post processing...");
 
 				data = data.Replace("(enum STBVorbisError)", string.Empty);
+				data = data.Replace("crc_table", "_crc_table");
+				data = data.Replace("memset(available, (int)(0), (ulong)(sizeof((available))))", "memset(available, 0, 32)");
+				data = data.Replace("return (int)((x) < (y)?-1:(x) > (y));", "return (int)((x) < (y)?-1:((x) > (y)?1:0));");
+				data = data.Replace("qsort(c->sorted_codewords, (ulong)(c->sorted_entries), (ulong)(sizeof((c->sorted_codewords[0]))), uint32_compare);",
+					"qsort(c->sorted_codewords, c->sorted_entries);");
+				data = data.Replace("sizeof(float)* * n", "sizeof(float) * n");
+				data = data.Replace("uint16", "ushort");
+				data = data.Replace("sizeof(ushort)* * n", "sizeof(ushort) * n");
+				data = data.Replace("return (int)((a->x) < (b->x)?-1:(a->x) > (b->x));",
+					"return (int)((a->x) < (b->x)?-1:((a->x) > (b->x)?1:0));");
+				data = data.Replace("!c->codewords) != 0", "c->codewords == null)");
 
-				/*                data = data.Replace("int has_alpha = (int)(((comp) == (2)) || ((comp) == (4)));",
-									"int has_alpha = (((comp) == (2)) || ((comp) == (4)))?1:0;");
-								data = data.Replace("*arr?",
-									"*arr != null?");
-								data = data.Replace("sizeof(int)* * 2",
-									"sizeof(int) * 2");
-								data = data.Replace("(int)((*(data)).Size)",
-									"sizeof(byte)");
-								data = data.Replace("(int)((*(_out_)).Size)",
-									"sizeof(byte)");
-								data = data.Replace("(int)((*(hash_table[h])).Size)",
-									"sizeof(byte*)");
-								data = data.Replace("(hash_table[h][0]).Size",
-									"sizeof(byte*)");
-								data = data.Replace("(byte***)(malloc((ulong)(16384 * sizeof(char**)))))",
-									"(byte***)(malloc((ulong)(16384 * sizeof(byte**))))");
-								data = data.Replace("(hlist)?",
-									"(hlist != null)?");
-								data = data.Replace("(hash_table[i])?",
-									"(hash_table[i] != null)?");*/
 
 				File.WriteAllText(@"..\..\..\..\StbSharp\Stb.Vorbis.Generated.cs", data);
 			}

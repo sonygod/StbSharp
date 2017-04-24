@@ -1,4 +1,6 @@
-﻿using Sichem;
+﻿using System;
+using System.Runtime.InteropServices;
+using Sichem;
 
 namespace StbSharp
 {
@@ -87,15 +89,91 @@ namespace StbSharp
 			public int channel_buffer_end;
 		}
 
-		public static sbyte[,] channel_position = new sbyte[7,6]
+		public static sbyte[,] channel_position =
 		{
-			{ 0 }, 
-			{ (2 | 4 | 1) }, { (2 | 1), (4 | 1) }, 
-			{ (2 | 1), (2 | 4 | 1), (4 | 1) }, 
-			{ (2 | 1), (4 | 1), (2 | 1), (4 | 1) }, 
-			{ (2 | 1), (2 | 4 | 1), (4 | 1), (2 | 1), (4 | 1) }, 
-			{ (2 | 1), (2 | 4 | 1), (4 | 1), (2 | 1), (4 | 1), (2 | 4 | 1) }
+			{0, 0, 0, 0, 0, 0},
+			{2 | 4 | 1, 0, 0, 0, 0, 0},
+			{2 | 1, 4 | 1, 0, 0, 0, 0},
+			{2 | 1, 2 | 4 | 1, 4 | 1, 0, 0, 0},
+			{2 | 1, 4 | 1, 2 | 1, 4 | 1, 0, 0},
+			{2 | 1, 2 | 4 | 1, 4 | 1, 2 | 1, 4 | 1, 0},
+			{2 | 1, 2 | 4 | 1, 4 | 1, 2 | 1, 4 | 1, 2 | 4 | 1}
 		};
 
+		public static uint get_bits(stb_vorbis f, int n)
+		{
+			uint z;
+			if (f.valid_bits < 0) return 0;
+			if (f.valid_bits < n)
+			{
+				if (n > 24)
+				{
+					z = get_bits(f, 24);
+					z += get_bits(f, n - 24) << 24;
+					return z;
+				}
+				if (f.valid_bits == 0) f.acc = 0;
+				while (f.valid_bits < n)
+				{
+					var z2 = get8_packet_raw(f);
+					if (z2 == -1)
+					{
+						f.valid_bits = -1;
+						return 0;
+					}
+					f.acc += (uint) (z2 << f.valid_bits);
+					f.valid_bits += 8;
+				}
+			}
+
+			if (f.valid_bits < 0) return 0;
+			z = (uint) (f.acc & ((1 << n) - 1));
+			f.acc >>= n;
+			f.valid_bits -= n;
+			return z;
+		}
+
+		private static double ldexp(double number, int exponent)
+		{
+			return number*Math.Pow(2, exponent);
+		}
+
+		private static void qsort(uint* values, int length)
+		{
+			// Conver to array
+			var ar = new uint[length];
+
+			for (var i = 0; i < ar.Length; ++i)
+			{
+				ar[i] = values[i];
+			}
+
+			Array.Sort(ar);
+
+			for (var i = 0; i < ar.Length; ++i)
+			{
+				values[i] = ar[i];
+			}
+		}
+
+		private static double log(double value)
+		{
+			return Math.Log(value);
+		}
+
+		private static double exp(double value)
+		{
+			return Math.Exp(value);
+		}
+
+		private static double cos(double value)
+		{
+			return Math.Cos(value);
+		}
+
+		private static double sin(double value)
+		{
+			return Math.Sin(value);
+		}
 	}
 }
