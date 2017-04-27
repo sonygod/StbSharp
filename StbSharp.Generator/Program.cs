@@ -400,7 +400,13 @@ namespace Generator
 				data = data.Replace("return (int)((a->x) < (b->x)?-1:(a->x) > (b->x));",
 					"return (int)((a->x) < (b->x)?-1:((a->x) > (b->x)?1:0));");
 				data = data.Replace("!c->codewords) != 0", "c->codewords == null)");
-
+				data = data.Replace("(void *)(0)", "null");
+				data = data.Replace("sizeof((**part_classdata))", "sizeof(byte *)");
+				data = data.Replace("sizeof((**part_classdata))", "sizeof(byte *)");
+				data = data.Replace("alloc.alloc_buffer?", "alloc.alloc_buffer != null?");
+				data = data.Replace("float*[]", "float**");
+				data = data.Replace("sizeof((*buf2))", "sizeof(float)");
+				data = data.Replace("f.mode_config +", "(Mode *)f.mode_config +");
 
 				File.WriteAllText(@"..\..\..\..\StbSharp\Stb.Vorbis.Generated.cs", data);
 			}

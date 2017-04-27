@@ -48,11 +48,11 @@ namespace StbSharp
 			public Floor* floor_config;
 			public int residue_count;
 			public ushort[] residue_types = new ushort[64];
-			public Residue residue_config = new Residue();
+			public Residue[] residue_config;
 			public int mapping_count;
 			public Mapping* mapping;
 			public int mode_count;
-			public Mode[] mode_config = new Mode[64];
+			public PinnedArray<Mode> mode_config = new PinnedArray<Mode>(64);
 			public uint total_samples;
 			public float*[] channel_buffers = new float*[16];
 			public float*[] outputs = new float*[16];

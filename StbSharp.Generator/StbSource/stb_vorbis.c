@@ -667,10 +667,10 @@ static int error(vorb *f, int e)
 #ifdef dealloca
 #define temp_free(f,p)                  (f->alloc.alloc_buffer ? 0 : dealloca(size))
 #else
-#define temp_free(f,p)                  0
+#define temp_free(f,p)                  
 #endif
-#define temp_alloc_save(f)              ((f)->temp_offset)
-#define temp_alloc_restore(f,p)         ((f)->temp_offset = (p))
+#define temp_alloc_save(f)              (f)->temp_offset
+#define temp_alloc_restore(f,p)         (f)->temp_offset = p
 
 #define temp_block_array(f,count,size)  make_block_array(temp_alloc(f,array_size_required(count,size)), count, size)
 
@@ -1447,9 +1447,9 @@ static int codebook_decode_scalar_raw(vorb *f, Codebook *c)
    var = f->acc & FAST_HUFFMAN_TABLE_MASK;                    \
    var = c->fast_huffman[var];                                \
    if (var >= 0) {                                            \
-      int n = c->codeword_lengths[var];                       \
+      int n2 = c->codeword_lengths[var];                      \
       f->acc >>= n;                                           \
-      f->valid_bits -= n;                                     \
+      f->valid_bits -= n2;                                    \
       if (f->valid_bits < 0) { f->valid_bits = 0; var = -1; } \
    } else {                                                   \
       var = codebook_decode_scalar_raw(f,c);                  \
@@ -1859,12 +1859,12 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
          int pcount = 0, class_set = 0;
          if (ch == 2) {
             while (pcount < part_read) {
-               int z = r->begin + pcount*r->part_size;
-               int c_inter = (z & 1), p_inter = z>>1;
+               int z2 = r->begin + pcount*r->part_size;
+               int c_inter = (z2 & 1), p_inter = z2>>1;
                if (pass == 0) {
-                  Codebook *c = f->codebooks+r->classbook;
+                  Codebook *c2 = f->codebooks+r->classbook;
                   int q;
-                  DECODE(q,f,c);
+                  DECODE(q,f,c2);
                   if (q == EOP) goto done;
                   #ifndef STB_VORBIS_DIVIDES_IN_RESIDUE
                   part_classdata[0][class_set] = r->classdata[q];
@@ -1876,13 +1876,13 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
                   #endif
                }
                for (i=0; i < classwords && pcount < part_read; ++i, ++pcount) {
-                  int z = r->begin + pcount*r->part_size;
+                  int z3 = r->begin + pcount*r->part_size;
                   #ifndef STB_VORBIS_DIVIDES_IN_RESIDUE
-                  int c = part_classdata[0][class_set][i];
+                  int c2 = part_classdata[0][class_set][i];
                   #else
-                  int c = classifications[0][pcount];
+                  int c2 = classifications[0][pcount];
                   #endif
-                  int b = r->residue_books[c][pass];
+                  int b = r->residue_books[c2][pass];
                   if (b >= 0) {
                      Codebook *book = f->codebooks + b;
                      #ifdef STB_VORBIS_DIVIDES_IN_CODEBOOK
@@ -1894,9 +1894,9 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
                         goto done;
                      #endif
                   } else {
-                     z += r->part_size;
-                     c_inter = z & 1;
-                     p_inter = z >> 1;
+                     z3 += r->part_size;
+                     c_inter = z3 & 1;
+                     p_inter = z3 >> 1;
                   }
                }
                #ifndef STB_VORBIS_DIVIDES_IN_RESIDUE
@@ -1905,12 +1905,12 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
             }
          } else if (ch == 1) {
             while (pcount < part_read) {
-               int z = r->begin + pcount*r->part_size;
-               int c_inter = 0, p_inter = z;
+               int z2 = r->begin + pcount*r->part_size;
+               int c_inter = 0, p_inter = z2;
                if (pass == 0) {
-                  Codebook *c = f->codebooks+r->classbook;
+                  Codebook *c2 = f->codebooks+r->classbook;
                   int q;
-                  DECODE(q,f,c);
+                  DECODE(q,f,c2);
                   if (q == EOP) goto done;
                   #ifndef STB_VORBIS_DIVIDES_IN_RESIDUE
                   part_classdata[0][class_set] = r->classdata[q];
@@ -1922,11 +1922,11 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
                   #endif
                }
                for (i=0; i < classwords && pcount < part_read; ++i, ++pcount) {
-                  int z = r->begin + pcount*r->part_size;
+                  int z3 = r->begin + pcount*r->part_size;
                   #ifndef STB_VORBIS_DIVIDES_IN_RESIDUE
-                  int c = part_classdata[0][class_set][i];
+                  int c2 = part_classdata[0][class_set][i];
                   #else
-                  int c = classifications[0][pcount];
+                  int c2 = classifications[0][pcount];
                   #endif
                   int b = r->residue_books[c][pass];
                   if (b >= 0) {
@@ -1934,9 +1934,9 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
                      if (!codebook_decode_deinterleave_repeat(f, book, residue_buffers, ch, &c_inter, &p_inter, n, r->part_size))
                         goto done;
                   } else {
-                     z += r->part_size;
+                     z3 += r->part_size;
                      c_inter = 0;
-                     p_inter = z;
+                     p_inter = z3;
                   }
                }
                #ifndef STB_VORBIS_DIVIDES_IN_RESIDUE
@@ -1945,12 +1945,12 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
             }
          } else {
             while (pcount < part_read) {
-               int z = r->begin + pcount*r->part_size;
-               int c_inter = z % ch, p_inter = z/ch;
+               int z2 = r->begin + pcount*r->part_size;
+               int c_inter = z2 % ch, p_inter = z2/ch;
                if (pass == 0) {
-                  Codebook *c = f->codebooks+r->classbook;
+                  Codebook *c2 = f->codebooks+r->classbook;
                   int q;
-                  DECODE(q,f,c);
+                  DECODE(q,f,c2);
                   if (q == EOP) goto done;
                   #ifndef STB_VORBIS_DIVIDES_IN_RESIDUE
                   part_classdata[0][class_set] = r->classdata[q];
@@ -1962,11 +1962,11 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
                   #endif
                }
                for (i=0; i < classwords && pcount < part_read; ++i, ++pcount) {
-                  int z = r->begin + pcount*r->part_size;
+                  int z3 = r->begin + pcount*r->part_size;
                   #ifndef STB_VORBIS_DIVIDES_IN_RESIDUE
-                  int c = part_classdata[0][class_set][i];
+                  int c2 = part_classdata[0][class_set][i];
                   #else
-                  int c = classifications[0][pcount];
+                  int c2 = classifications[0][pcount];
                   #endif
                   int b = r->residue_books[c][pass];
                   if (b >= 0) {
@@ -1974,9 +1974,9 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
                      if (!codebook_decode_deinterleave_repeat(f, book, residue_buffers, ch, &c_inter, &p_inter, n, r->part_size))
                         goto done;
                   } else {
-                     z += r->part_size;
-                     c_inter = z % ch;
-                     p_inter = z / ch;
+                     z3 += r->part_size;
+                     c_inter = z3 % ch;
+                     p_inter = z3 / ch;
                   }
                }
                #ifndef STB_VORBIS_DIVIDES_IN_RESIDUE
@@ -1995,9 +1995,9 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
          if (pass == 0) {
             for (j=0; j < ch; ++j) {
                if (!do_not_decode[j]) {
-                  Codebook *c = f->codebooks+r->classbook;
+                  Codebook *c2 = f->codebooks+r->classbook;
                   int temp;
-                  DECODE(temp,f,c);
+                  DECODE(temp,f,c2);
                   if (temp == EOP) goto done;
                   #ifndef STB_VORBIS_DIVIDES_IN_RESIDUE
                   part_classdata[j][class_set] = r->classdata[temp];
@@ -2014,17 +2014,17 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
             for (j=0; j < ch; ++j) {
                if (!do_not_decode[j]) {
                   #ifndef STB_VORBIS_DIVIDES_IN_RESIDUE
-                  int c = part_classdata[j][class_set][i];
+                  int c2 = part_classdata[j][class_set][i];
                   #else
-                  int c = classifications[j][pcount];
+                  int c2 = classifications[j][pcount];
                   #endif
                   int b = r->residue_books[c][pass];
                   if (b >= 0) {
                      float *target = residue_buffers[j];
                      int offset = r->begin + pcount * r->part_size;
-                     int n = r->part_size;
+                     int n2 = r->part_size;
                      Codebook *book = f->codebooks + b;
-                     if (!residue_decode(f, book, target, offset, n, rtype))
+                     if (!residue_decode(f, book, target, offset, n2, rtype))
                         goto done;
                   }
                }
@@ -2857,7 +2857,7 @@ static int do_floor(vorb *f, Mapping *map, int i, int n, float *target, YTYPE *f
             if (lx != hx)
                draw_line(target, lx,ly, hx,hy, n2);
             CHECK(f);
-            lx = hx, ly = hy;
+			lx = hx; ly = hy;
          }
       }
       if (lx < n2) {
