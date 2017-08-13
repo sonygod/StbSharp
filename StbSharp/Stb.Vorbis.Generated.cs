@@ -2101,7 +2101,6 @@ namespace StbSharp
 					else
 					{
 						error:
-						;
 						zero_channel[i] = (int) (1);
 					}
 				}
@@ -2320,7 +2319,7 @@ namespace StbSharp
 				first = (int) (0);
 			}
 
-			for ((s) == (-1); 
+			for ((s) == (-1); ;)
 			{
 				byte* q;
 				int n;
